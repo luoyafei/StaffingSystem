@@ -24,7 +24,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <div class="padding border-bottom">  
   <button type="button" class="button border-yellow" onclick="window.location.href='#add'"><span class="icon-plus-square-o"></span> 添加内容</button>
   </div>
-  <table class="table table-hover text-center">
+  <table class="table table-hover text-center" id="tableId">
     <tr>
       <th width="15%">ID</th>
       <th width="10%">照片</th>
@@ -39,64 +39,24 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  <th width="5%">操作</th>
     </tr>
    
-    <tr>
-      <td>1</td>     
-      <td><img src="images/11.jpg" alt="" width="120" height="50" /></td>     
-      <td>首页焦点图</td>
-      <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-      <td><div class="button-group">
-      <a class="button border-main" href="#add"><span class="icon-edit"></span> 修改</a>
-      <a class="button border-red" href="javascript:void(0)" onclick="return del(1,1)"><span class="icon-trash-o"></span> 删除</a>
+    <tr class="trClass">
+      <td class="userId"></td>     
+      <td><img src="" class="userPhoto" alt="" width="120" height="50" /></td>     
+      <td class="userName"></td>
+      <td class="userIdcard"></td>
+	  <td class="userAddress"></td>
+	  <td class="userAge"></td>
+	  <td class="department"></td>
+	  <td class="post"></td>
+	  <td class="userTel"></td>
+	  <td class="userEmail"></td>
+      <td><div class="button-group delBtn">
+      <!-- <a class="button border-main" href="#add"><span class="icon-edit"></span> 修改</a> -->
+      	<!-- <a class="button border-red"><span class="icon-trash-o"></span> 删除</a> -->
       </div></td>
     </tr>
-    <tr>
-      <td>2</td>     
-      <td><img src="images/11.jpg" alt="" width="120" height="50" /></td>     
-      <td>首页焦点图</td>
-      <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-      <td><div class="button-group">
-      <a class="button border-main" href="#add"><span class="icon-edit"></span> 修改</a>
-      <a class="button border-red" href="javascript:void(0)" onclick="return del(1,1)"><span class="icon-trash-o"></span> 删除</a>
-      </div></td>
-    </tr>
-    <tr>
-      <td>3</td>     
-      <td><img src="images/11.jpg" alt="" width="120" height="50" /></td>     
-      <td>首页焦点图</td>
-      <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-	  <td>描述文字....</td>
-      <td><div class="button-group">
-      <a class="button border-main" href="#add"><span class="icon-edit"></span> 修改</a>
-      <a class="button border-red" href="javascript:void(0)" onclick="return del(1,1)"><span class="icon-trash-o"></span> 删除</a>
-      </div></td>
-    </tr>
-    
   </table>
 </div>
-<script type="text/javascript">
-function del(id,mid){
-	if(confirm("您确定要删除吗?")){
-	
-	}
-}
-</script>
 <div class="panel admin-panel margin-top" id="add">
   <div class="panel-head"><strong><span class="icon-pencil-square-o"></span> 增加内容</strong></div>
   <div class="body-content">
@@ -207,7 +167,35 @@ function del(id,mid){
   </div>
 </div>
 	<script type="text/javascript">
+	
 		$(document).ready(function() {
+			
+			$.post("/StaffingSystem/getUsers!get", {}, function(data, textStatus) {
+				if(data.success) {
+					var users = data.users;
+					for(var i = 0; i < users.length-1; i++) {
+						$("#tableId").append($(".trClass").clone().attr("class", "trClassClone"));
+					}
+					
+					for(var i = 0; i < users.length; i++) {
+						
+						$(".userId").eq(i).text(users[i].userId);
+						$(".userPhoto").eq(i).attr("src", users[i].userPhoto);
+						$(".userName").eq(i).text(users[i].userName);
+						$(".userIdcard").eq(i).text(users[i].userIdcard);
+						$(".userAddress").eq(i).text(users[i].userAddress);
+						$(".userAge").eq(i).text(users[i].age);
+						$(".department").eq(i).text(users[i].department);
+						$(".post").eq(i).text(users[i].post);
+						$(".userTel").eq(i).text(users[i].userTel);
+						$(".userEmail").eq(i).text(users[i].userEmail);
+						$(".delBtn").eq(i).html("<a class='button border-red' onclick=del(\""+ users[i].userId +"\")><span class='icon-trash-o'></span>删除</a>");
+					}
+					
+				} else
+					alert(data.reason);
+			}, "json");
+			
 			$("#danganBtn").bind("click", function() {
 				
 				var userName = $("#userName").val().trim();
@@ -254,6 +242,20 @@ function del(id,mid){
 					alert("请按要求输入数据");
 			});
 		});
+		
+		function del(userId){
+			if(confirm("您确定要删除吗?")){
+				$.post("/StaffingSystem/deleteUser!delete", {
+					userId : userId
+				}, function(data, textStatus) {
+					if(data.success) {
+						location.reload();
+					} else
+						alert(data.reason);
+				}, "json");
+			}
+		}
+	
 	</script>
 </body>
 </html>

@@ -25,5 +25,10 @@
     	<action name="resetPwd" class="resetPwd" />
     	<!-- 发布用户信息 -->
     	<action name="addUserInfo" class="addUserInfo" />
+    	<!-- 获取所有的用户信息 -->
+    	<action name="getUsers" class="getUsers" />
+    	<!-- 删除用户 -->
+    	<action name="deleteUser" class="deleteUser" />
+    	
     </package>
 </struts>

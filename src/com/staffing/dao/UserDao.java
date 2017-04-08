@@ -56,7 +56,7 @@ public class UserDao {
 			return null;
 		}
 	}
-	public List<User> getUsers(final int start, final int lengt) {
+	public List<User> getUsers(final int start, final int length) {
 		
 		try {
 			return hibernateTemplate.execute(new HibernateCallback<List<User>>() {
@@ -65,8 +65,11 @@ public class UserDao {
 				public List<User> doInHibernate(Session session) throws HibernateException, SQLException {
 					String hql = "from User";
 					Query q = session.createQuery(hql);
-					return (List<User>) q.setFirstResult(start).setMaxResults(lengt).list();
-				}
+					if(start == -1 && length == -1)
+						return (List<User>) q.list();
+					else
+						return (List<User>) q.setFirstResult(start).setMaxResults(length).list();
+				}	
 			});
 		} catch (Exception e) {
 			e.printStackTrace();
