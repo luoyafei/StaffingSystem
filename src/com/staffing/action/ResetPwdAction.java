@@ -16,27 +16,25 @@ import com.staffing.bean.Admin;
 import com.staffing.dao.AdminDao;
 
 @SuppressWarnings("serial")
-@Component("adminLogin")
+@Component("resetPwd")
 @Scope("prototype")
-public class AdminLogin extends ActionSupport {
-
-
-	private String adminNum;
-	private String password;
+public class ResetPwdAction extends ActionSupport {
+	
+	private String oldPwd;
+	private String newPwd;
 	private AdminDao ad;
 	
-	
-	public String getAdminNum() {
-		return adminNum;
+	public String getOldPwd() {
+		return oldPwd;
 	}
-	public void setAdminNum(String adminNum) {
-		this.adminNum = adminNum;
+	public void setOldPwd(String oldPwd) {
+		this.oldPwd = oldPwd;
 	}
-	public String getPassword() {
-		return password;
+	public String getNewPwd() {
+		return newPwd;
 	}
-	public void setPassword(String password) {
-		this.password = password;
+	public void setNewPwd(String newPwd) {
+		this.newPwd = newPwd;
 	}
 	public AdminDao getAd() {
 		return ad;
@@ -46,7 +44,7 @@ public class AdminLogin extends ActionSupport {
 		this.ad = ad;
 	}
 
-	public void login() {
+	public void reset() {
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json; charset=utf-8");
 		PrintWriter out = null;
@@ -56,18 +54,23 @@ public class AdminLogin extends ActionSupport {
 		try {
 			out = response.getWriter();
 		} catch(IOException e) {}
-		if(adminNum != null && adminNum.trim().hashCode() != 0 && password != null && password.trim().hashCode() != 0) {
-			Admin admin = ad.getAdminByNum(adminNum);
+		if(oldPwd != null && oldPwd.trim().hashCode() != 0 && newPwd != null && newPwd.trim().hashCode() != 0) {
+			Admin admin = (Admin) ServletActionContext.getRequest().getSession().getAttribute("admin");
 			if(admin != null) {
-				if(admin.getAdminPwd().equals(password)) {
-					success = true;
-					ServletActionContext.getRequest().getSession().setAttribute("admin", admin);
+				if(admin.getAdminPwd().equals(oldPwd)) {
+					
+					admin.setAdminPwd(newPwd);
+					if(ad.updateAdmin(admin)) {
+						success = true;
+						ServletActionContext.getRequest().getSession().setAttribute("admin", admin);
+					} else
+						reason = "更新密码失败";
 				} else
-					reason = "密码错误";
+					reason = "请将输入正确的旧密码";
 			} else
-				reason = "该账号不存在";
+				reason = "请先进行登陆";
 		} else
-			reason = "请按要求填写数据";
+			reason = "请将数据输入完整";
 		
 		jo.addProperty("success", success);
 		jo.addProperty("reason", reason);

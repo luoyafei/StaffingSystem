@@ -21,5 +21,9 @@
     <package name="default" extends="struts-default" namespace="/">
     	<!-- 管理员登陆action --> 
     	<action name="login" class="adminLogin" />
+    	<!-- 设置密码 -->
+    	<action name="resetPwd" class="resetPwd" />
+    	<!-- 发布用户信息 -->
+    	<action name="addUserInfo" class="addUserInfo" />
     </package>
 </struts>

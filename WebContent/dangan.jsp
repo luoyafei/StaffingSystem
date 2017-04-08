@@ -26,7 +26,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   </div>
   <table class="table table-hover text-center">
     <tr>
-      <th width="5%">ID</th>
+      <th width="15%">ID</th>
       <th width="10%">照片</th>
       <th width="5%">姓名</th>
       <th width="10%">身份证号</th>
@@ -35,7 +35,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  <th width="10%">部门</th>
       <th width="10%">职务</th>
       <th width="10%">电话</th>
-	  <th width="10%">QQ</th>
       <th width="10%">邮箱</th>
 	  <th width="5%">操作</th>
     </tr>
@@ -45,7 +44,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <td><img src="images/11.jpg" alt="" width="120" height="50" /></td>     
       <td>首页焦点图</td>
       <td>描述文字....</td>
-	  <td>描述文字....</td>
 	  <td>描述文字....</td>
 	  <td>描述文字....</td>
 	  <td>描述文字....</td>
@@ -68,7 +66,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 	  <td>描述文字....</td>
 	  <td>描述文字....</td>
 	  <td>描述文字....</td>
-	  <td>描述文字....</td>
       <td><div class="button-group">
       <a class="button border-main" href="#add"><span class="icon-edit"></span> 修改</a>
       <a class="button border-red" href="javascript:void(0)" onclick="return del(1,1)"><span class="icon-trash-o"></span> 删除</a>
@@ -79,7 +76,6 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <td><img src="images/11.jpg" alt="" width="120" height="50" /></td>     
       <td>首页焦点图</td>
       <td>描述文字....</td>
-	  <td>描述文字....</td>
 	  <td>描述文字....</td>
 	  <td>描述文字....</td>
 	  <td>描述文字....</td>
@@ -104,14 +100,14 @@ function del(id,mid){
 <div class="panel admin-panel margin-top" id="add">
   <div class="panel-head"><strong><span class="icon-pencil-square-o"></span> 增加内容</strong></div>
   <div class="body-content">
-    <form method="post" class="form-x" action=""> 
+    <div class="form-x"> 
 	
       <div class="form-group">
         <div class="label">
           <label>姓名：</label>
         </div>
         <div class="field">
-          <input type="text" class="input w50" value="" name="name" data-validate="required:请输入标题" />
+          <input type="text" class="input w50" value="" id="userName" name="name" data-validate="required:请输入标题" />
           <div class="tips"></div>
         </div>
       </div>
@@ -121,9 +117,10 @@ function del(id,mid){
           <label>照片：</label>
         </div>
         <div class="field">
-          <input type="text" id="url1" name="img" class="input tips" style="width:25%; float:left;"  value="" data-toggle="hover" data-place="right" data-image="" />
-          <input type="button" class="button bg-blue margin-left" id="image1" value="+ 浏览上传"  style="float:left;">
-          <div class="tipss">图片尺寸：1920*500</div>
+        		<input type="file" id="picture" class="input" style="width:25%; float:left;" data-place="right" data-image="" name="picture" accept="image/*" />
+          <!-- <input type="text" id="url1" name="img" class="input tips" style="width:25%; float:left;"  value="" data-toggle="hover" data-place="right" data-image="" /> -->
+          <!-- <input type="button" class="button bg-blue margin-left" id="image1" value="+ 浏览上传"  style="float:left;"> -->
+          <!-- <div class="tipss">图片尺寸：1920*500</div> -->
         </div>
       </div>
 	  
@@ -132,7 +129,7 @@ function del(id,mid){
           <label>身份证号：</label>
         </div>
         <div class="field">
-          <input type="text" class="input w50" name="idcard" value=""  />
+          <input type="text" class="input w50" id="userIdcard" name="idcard" value=""  />
           <div class="tips"></div>
         </div>
       </div>
@@ -142,7 +139,7 @@ function del(id,mid){
           <label>住址：</label>
         </div>
         <div class="field">
-          <textarea type="text" class="input" name="address" value=""></textarea>
+          <textarea type="text" class="input" id="userAddress" name="address" value=""></textarea>
           <div class="tips"></div>
         </div>
       </div>
@@ -152,7 +149,7 @@ function del(id,mid){
           <label>年龄：</label>
         </div>
         <div class="field">
-          <input type="text" class="input w50" name="age" value=""  />
+          <input type="text" class="input w50" id="age" name="age" value=""  />
           <div class="tips"></div>
         </div>
       </div>
@@ -162,7 +159,7 @@ function del(id,mid){
           <label>部门：</label>
         </div>
         <div class="field">
-          <input type="text" class="input w50" name="" value=""  />
+          <input type="text" class="input w50" id="department" name="" value=""  />
           <div class="tips"></div>
         </div>
       </div>
@@ -172,7 +169,7 @@ function del(id,mid){
           <label>职务：</label>
         </div>
         <div class="field">
-          <input type="text" class="input w50" name="" value=""  />
+          <input type="text" class="input w50" id="post" name="" value=""  />
           <div class="tips"></div>
         </div>
       </div>
@@ -182,17 +179,7 @@ function del(id,mid){
           <label>电话：</label>
         </div>
         <div class="field">
-          <input type="text" class="input w50" name="" value=""  />
-          <div class="tips"></div>
-        </div>
-      </div>
-	  
-	  <div class="form-group">
-        <div class="label">
-          <label>QQ：</label>
-        </div>
-        <div class="field">
-          <input type="text" class="input w50" name="" value=""  />
+          <input type="text" class="input w50" name="" id="userTel" value=""  />
           <div class="tips"></div>
         </div>
       </div>
@@ -202,7 +189,7 @@ function del(id,mid){
           <label>邮箱：</label>
         </div>
         <div class="field">
-          <input type="text" class="input w50" name="" value=""  />
+          <input type="text" class="input w50" name="" id="userEmail" value=""  />
           <div class="tips"></div>
         </div>
       </div>
@@ -213,12 +200,60 @@ function del(id,mid){
           <label></label>
         </div>
         <div class="field">
-          <button class="button bg-main icon-check-square-o" type="submit"> 提交</button>
+          <button class="button bg-main icon-check-square-o" id="danganBtn"> 提交</button>
         </div>
       </div>
-	  
-    </form>
+    </div>
   </div>
 </div>
+	<script type="text/javascript">
+		$(document).ready(function() {
+			$("#danganBtn").bind("click", function() {
+				
+				var userName = $("#userName").val().trim();
+				var userIdcard= $("#userIdcard").val().trim();
+				var userAddress = $("#userAddress").val().trim();
+				var age = $("#age").val().trim();
+				var department = $("#department").val().trim();
+				var post = $("#post").val().trim();
+				var userTel = $("#userTel").val().trim();
+				var userEmail = $("#userEmail").val().trim();
+			
+				if(userName != "" && userIdcard != "" && userAddress != "" && age != "" && department != "" && post != "" && userTel != "" && userEmail != "" && $("#picture").val().trim() != "") {
+					var fd = new FormData();
+					fd.append("picture", $("#picture").get(0).files[0]);
+					fd.append("userName", userName);
+					fd.append("userIdcard", userIdcard);
+					fd.append("userAddress", userAddress);
+					fd.append("age", age);
+					fd.append("department", department);
+					fd.append("post", post);
+					fd.append("userTel", userTel);
+					fd.append("userEmail", userEmail);
+					
+					$.ajax({
+						url: "/StaffingSystem/addUserInfo!addUserInfo",
+						type: "POST",
+						dataType: "json",
+						processData: false,
+						contentType: false,
+						data: fd,
+						success: function(data) {
+							if(data.success) {
+								alert("上传成功");
+							} else {
+								alert(data.reason);
+							}
+						},
+						 error: function(XMLHttpRequest, textStatus, errorThrown) {
+							 alert("上传失败");
+						}
+					});
+					
+				} else
+					alert("请按要求输入数据");
+			});
+		});
+	</script>
 </body>
 </html>
