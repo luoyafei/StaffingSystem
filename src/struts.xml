@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE struts PUBLIC
+          "-//Apache Software Foundation//DTD Struts Configuration 2.0//EN"
+          "http://struts.apache.org/dtds/struts-2.0.dtd">
+<struts>
+	
+	<constant name="struts.devMode" value="true"/>
+	<constant name="struts.ognl.allowStaticMethodAccess" value="true" />
+	<!-- 设置最大上传文件的大小 2M-->
+	<constant name="struts.multipart.maxSize" value="5242880" />
+	<!-- 配置临时存储地址 -->
+	<constant name="struts.multipart.saveDir" value="/tmp"/>
+	
+	<package name="main" extends="struts-default" namespace="/">
+	
+		<default-action-ref name="index" />
+    	<action name="index">
+    		<result>/index.jsp</result>
+    	</action>
+	</package>
+    <package name="default" extends="struts-default" namespace="/">
+    	<!-- 管理员登陆action --> 
+    	<action name="login" class="adminLogin" />
+    </package>
+</struts>

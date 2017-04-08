@@ -14,8 +14,8 @@ import org.hibernate.annotations.GenericGenerator;
 public class Admin {
 	
 	private String adminId;
-	private String adminNo;
-	private String adminNum;
+	private String adminNo;//编号
+	private String adminNum;//账号
 	private String adminPwd;
 	private Timestamp recentLogin;
 	
