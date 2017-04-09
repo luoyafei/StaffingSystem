@@ -72,13 +72,13 @@ function del(id,mid){
 <div class="panel admin-panel margin-top" id="add">
   <div class="panel-head"><strong><span class="icon-pencil-square-o"></span> 增加考勤表</strong></div>
   <div class="body-content">
-    <form method="post" class="form-x" action="">    
+    <div class="form-x">    
       <div class="form-group">
         <div class="label">
           <label>标题：</label>
         </div>
         <div class="field">
-          <input type="text" class="input w50" value="" name="title" data-validate="required:请输入标题" />
+          <input type="text" class="input w50" value="" id="checkTitle" name="title" data-validate="required:请输入标题" />
           <div class="tips"></div>
         </div>
       </div>
@@ -87,7 +87,7 @@ function del(id,mid){
           <label>内容：</label>
         </div>
         <div class="field">
-          <textarea type="text" class="input" name="content" style="height:120px;" value=""></textarea>
+          <textarea type="text" class="input" id="checkContent" name="content" style="height:120px;" value=""></textarea>
           <div class="tips"></div>
         </div>
       </div>
@@ -97,11 +97,32 @@ function del(id,mid){
           <label></label>
         </div>
         <div class="field">
-          <button class="button bg-main icon-check-square-o" type="submit"> 提交</button>
+          <button class="button bg-main icon-check-square-o" id="kaoqinBtn"> 提交</button>
         </div>
       </div>
-    </form>
+    </div>
   </div>
 </div>    
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$("#kaoqinBtn").bind("click", function() {
+			var checkTitle = $("#checkTitle").val().trim();
+			var checkContent = $("#checkContent").val().trim();
+			if(checkTitle != "" && checkContent != "") {
+				$.post("/StaffingSystem/addCheckInfo!add", {
+					checkTitle : checkTitle,
+					checkContent : checkContent
+				}, function(data, textStatus) {
+					if(data.success) {
+						alert("添加成功");
+						location.reload();
+					} else
+						alert(data.reason);
+				}, "json");
+			} else
+				alert("请按要求填写数据");
+		});
+	});
+	</script>
   </body>
 </html>

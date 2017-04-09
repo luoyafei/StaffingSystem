@@ -29,6 +29,8 @@
     	<action name="getUsers" class="getUsers" />
     	<!-- 删除用户 -->
     	<action name="deleteUser" class="deleteUser" />
+    	<!-- 增加考勤 -->
+    	<action name="addCheckInfo" class="addCheckInfo" />
     	
     </package>
 </struts>
