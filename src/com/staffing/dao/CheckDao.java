@@ -62,7 +62,7 @@ public class CheckDao {
 				@SuppressWarnings("unchecked")
 				@Override
 				public List<Check> doInHibernate(Session session) throws HibernateException, SQLException {
-					String hql = "from User";
+					String hql = "from Check";
 					Query q = session.createQuery(hql);
 					if(start == -1 && length == -1)
 						return (List<Check>) q.list();

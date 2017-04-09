@@ -31,6 +31,10 @@
     	<action name="deleteUser" class="deleteUser" />
     	<!-- 增加考勤 -->
     	<action name="addCheckInfo" class="addCheckInfo" />
+    	<!-- 获取所有考勤信息 -->
+    	<action name="getChecks" class="getChecks" />
+    	<!-- 删除考勤信息 -->
+    	<action name="deleteCheck" class="deleteCheck" />
     	
     </package>
 </struts>

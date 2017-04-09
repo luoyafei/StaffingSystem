@@ -24,7 +24,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
   <div class="padding border-bottom">  
   <button type="button" class="button border-yellow" onclick="window.location.href='#add'"><span class="icon-plus-square-o"></span> 添加考勤表</button>
   </div>
-  <table class="table table-hover text-center">
+  <table class="table table-hover text-center" id="tableId">
     <tr>
       <th width="10%">ID</th>
       <th width="10%">标题</th>
@@ -33,42 +33,16 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </tr>
    
     <tr>
-      <td>1</td>     
-      <td>今天好美丽</td>     
-      <td>首页焦点图首页焦点图等我打首发大青蛙的娃大单位</td>
-      <td><div class="button-group">
-      <a class="button border-main" href="#add"><span class="icon-edit"></span> 修改</a>
-      <a class="button border-red" href="javascript:void(0)" onclick="return del(1,1)"><span class="icon-trash-o"></span> 删除</a>
+      <td class="checkId"></td>     
+      <td class="checkTitle"></td>     
+      <td class="checkContent"></td>
+      <td><div class="button-group delBtn">
+      <!-- <a class="button border-main" href="#add"><span class="icon-edit"></span> 修改</a> 
+      <a class="button border-red"><span class="icon-trash-o"></span> 删除</a>-->
       </div></td>
     </tr>
-    <tr>
-      <td>2</td>     
-      <td>昨天天气好</td>     
-      <td>首页焦点图首页焦点图等我打首发大青蛙的娃大单位</td>
-      <td><div class="button-group">
-      <a class="button border-main" href="#add"><span class="icon-edit"></span> 修改</a>
-      <a class="button border-red" href="javascript:void(0)" onclick="return del(1,1)"><span class="icon-trash-o"></span> 删除</a>
-      </div></td>
-    </tr>
-    <tr>
-      <td>3</td>     
-      <td>明天下雨</td>     
-      <td>首页焦点图等我打首发大青蛙的娃大单位</td>
-      <td><div class="button-group">
-      <a class="button border-main" href="#add"><span class="icon-edit"></span> 修改</a>
-      <a class="button border-red" href="javascript:void(0)" onclick="return del(1,1)"><span class="icon-trash-o"></span> 删除</a>
-      </div></td>
-    </tr>
-    
   </table>
 </div>
-<script type="text/javascript">
-function del(id,mid){
-	if(confirm("您确定要删除吗?")){
-	
-	}
-}
-</script>
 <div class="panel admin-panel margin-top" id="add">
   <div class="panel-head"><strong><span class="icon-pencil-square-o"></span> 增加考勤表</strong></div>
   <div class="body-content">
@@ -105,6 +79,26 @@ function del(id,mid){
 </div>    
 	<script type="text/javascript">
 	$(document).ready(function() {
+		
+		$.post("/StaffingSystem/getChecks!get", {}, function(data, textStatus) {
+			if(data.success) {
+				var checks = data.checks;
+				for(var i = 0; i < checks.length-1; i++) {
+					$("#tableId").append($(".trClass").clone().attr("class", "trClassClone"));
+				}
+				
+				for(var i = 0; i < checks.length; i++) {
+					
+					$(".checkId").eq(i).text(checks[i].checkId);
+					$(".checkTitle").eq(i).text(checks[i].checkTitle);
+					$(".checkContent").eq(i).text(checks[i].checkContent);
+					$(".delBtn").eq(i).html("<a class='button border-red' onclick=del(\""+ checks[i].checkId +"\")><span class='icon-trash-o'></span>删除</a>");
+				}
+				
+			} else
+				alert(data.reason);
+		}, "json");
+		
 		$("#kaoqinBtn").bind("click", function() {
 			var checkTitle = $("#checkTitle").val().trim();
 			var checkContent = $("#checkContent").val().trim();
@@ -123,6 +117,20 @@ function del(id,mid){
 				alert("请按要求填写数据");
 		});
 	});
+	
+	function del(checkId){
+		if(confirm("您确定要删除吗?")){
+			$.post("/StaffingSystem/deleteCheck!delete", {
+				checkId : checkId
+			}, function(data, textStatus) {
+				if(data.success) {
+					alert("删除成功");
+					location.reload();
+				} else
+					alert(data.reason);
+			}, "json");
+		}
+	}
 	</script>
   </body>
 </html>
