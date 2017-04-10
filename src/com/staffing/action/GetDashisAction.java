@@ -14,34 +14,22 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.opensymphony.xwork2.ActionSupport;
-import com.staffing.bean.User;
-import com.staffing.dao.UserDao;
-
+import com.staffing.bean.Dashi;
+import com.staffing.dao.DashiDao;
 @SuppressWarnings("serial")
-@Component("getUsers")
+@Component("getDashis")
 @Scope("prototype")
-public class GetUsersAction extends ActionSupport {
-	
-	public String getUserId() {
-		return userId;
+public class GetDashisAction extends ActionSupport {
+
+	public String getDashiId() {
+		return dashiId;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setDashiId(String dashiId) {
+		this.dashiId = dashiId;
 	}
 
 	private String start = null;
 	private String length = null;
-	
-	private String userId;
-	
-	private UserDao ud;
-	public UserDao getUd() {
-		return ud;
-	}
-	@Resource(name="userDao")
-	public void setUd(UserDao ud) {
-		this.ud = ud;
-	}
 	public String getStart() {
 		return start;
 	}
@@ -54,6 +42,16 @@ public class GetUsersAction extends ActionSupport {
 	public void setLength(String length) {
 		this.length = length;
 	}
+	
+	private DashiDao dd;
+	public DashiDao getDd() {
+		return dd;
+	}
+	@Resource(name="dashiDao")
+	public void setDd(DashiDao dd) {
+		this.dd = dd;
+	}
+	
 	
 	public void get() {
 		HttpServletResponse response = ServletActionContext.getResponse();
@@ -68,10 +66,10 @@ public class GetUsersAction extends ActionSupport {
 		} catch(IOException e) {}
 		
 		if(start == null && length == null) {
-			List<User> users = ud.getUsers(-1, -1);
-			if(users != null) {
+			List<Dashi> dashis = dd.getDashis(-1, -1);
+			if(dashis != null) {
 				success = true;
-				jo.add("users", gson.toJsonTree(users));
+				jo.add("dashis", gson.toJsonTree(dashis));
 			} else
 				reason = "获取数据为空";
 		} 
@@ -85,7 +83,10 @@ public class GetUsersAction extends ActionSupport {
 		out.close();
 	}
 	
+	private String dashiId;
+	
 	public void getOne() {
+		
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json; charset=utf-8");
 		PrintWriter out = null;
@@ -96,16 +97,15 @@ public class GetUsersAction extends ActionSupport {
 		try {
 			out = response.getWriter();
 		} catch(IOException e) {}
-
-		if(userId != null) {
-			User user = ud.getUserInId(userId);
-			if(user != null) {
+		
+		if(dashiId != null) {
+			Dashi dashi = dd.getDashiById(dashiId);
+			if(dashi != null) {
 				success = true;
-				jo.add("user", gson.toJsonTree(user));
+				jo.add("dashi", gson.toJsonTree(dashi));
 			} else
 				reason = "获取数据为空";
-		} else
-			reason = "请选择用户";
+		} 
 		
 		jo.addProperty("success", success);
 		jo.addProperty("reason", reason);
@@ -114,5 +114,6 @@ public class GetUsersAction extends ActionSupport {
 		
 		out.flush();
 		out.close();
+		
 	}
 }

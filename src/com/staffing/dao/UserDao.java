@@ -77,4 +77,41 @@ public class UserDao {
 		}
 		
 	}
+	public List<User> getUsersByListSearch(final String userName) {
+		try {
+			return hibernateTemplate.execute(new HibernateCallback<List<User>>() {
+				@SuppressWarnings({ "unchecked"})
+				@Override
+				public List<User> doInHibernate(Session session) throws HibernateException, SQLException {
+					String hql = "from User u where u.userName like :userName";
+					Query q = session.createQuery(hql);
+					q.setString("userName", "%" + userName + "%");
+					return (List<User>) q.list();
+				}	
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	public User getUserInUserName(final String userName) {
+		try {
+			return hibernateTemplate.execute(new HibernateCallback<User>() {
+				@Override
+				public User doInHibernate(Session session) throws HibernateException, SQLException {
+					String hql = "from User u where u.userName = :userName";
+					Query q = session.createQuery(hql);
+					q.setString("userName", userName);
+					if(q.list() != null) {
+						return (User) q.list().get(0);
+					} else
+						return null;
+					
+				}	
+			});
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 }

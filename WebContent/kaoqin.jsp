@@ -32,7 +32,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
       <th width="15%">操作</th>
     </tr>
    
-    <tr>
+    <tr class="trClass">
       <td class="checkId"></td>     
       <td class="checkTitle"></td>     
       <td class="checkContent"></td>
@@ -77,6 +77,41 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
     </div>
   </div>
 </div>    
+
+<div class="panel admin-panel margin-top" id="mod">
+  <div class="panel-head"><strong><span class="icon-pencil-square-o"></span>修改考勤表</strong></div>
+  <div class="body-content">
+    <div class="form-x">    
+      <div class="form-group">
+        <div class="label">
+          <label>标题：</label>
+        </div>
+        <div class="field">
+          <input type="text" class="input w50" value="" id="checkTitleMod" name="title" data-validate="required:请输入标题" />
+          <div class="tips"></div>
+        </div>
+      </div>
+      <div class="form-group">
+        <div class="label">
+          <label>内容：</label>
+        </div>
+        <div class="field">
+          <textarea type="text" class="input" id="checkContentMod" name="content" style="height:120px;" value=""></textarea>
+          <div class="tips"></div>
+        </div>
+      </div>
+      
+      <div class="form-group">
+        <div class="label">
+          <label></label>
+        </div>
+        <div class="field">
+          <button class="button bg-main icon-check-square-o" id="kaoqinBtnMod"> 提交</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>  
 	<script type="text/javascript">
 	$(document).ready(function() {
 		
@@ -88,11 +123,11 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 				}
 				
 				for(var i = 0; i < checks.length; i++) {
-					
 					$(".checkId").eq(i).text(checks[i].checkId);
 					$(".checkTitle").eq(i).text(checks[i].checkTitle);
 					$(".checkContent").eq(i).text(checks[i].checkContent);
-					$(".delBtn").eq(i).html("<a class='button border-red' onclick=del(\""+ checks[i].checkId +"\")><span class='icon-trash-o'></span>删除</a>");
+					var modifyStr = "<a class='button border-main' href='#mod' onclick=mod(\"" + checks[i].checkId + "\")><span class='icon-edit'></span>修改</a>";
+					$(".delBtn").eq(i).html(modifyStr + "<a class='button border-red' onclick=del(\""+ checks[i].checkId +"\")><span class='icon-trash-o'></span>删除</a>");
 				}
 				
 			} else
@@ -131,6 +166,44 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 			}, "json");
 		}
 	}
+	
+	function mod(checkId) {
+		
+		$.post("/StaffingSystem/getChecks!getOne", {
+			checkId : checkId
+		}, function(data, textStatus) {
+			if(data.success) {
+				var check = data.check;
+				if(check != null) {
+					$("#checkTitleMod").val(check.checkTitle);
+					$("#checkContentMod").val(check.checkContent);
+				}
+				
+				$("#kaoqinBtnMod").bind("click", function() {
+					
+					var checkTitle = $("#checkTitleMod").val().trim();
+					var checkContent = $("#checkContentMod").val().trim();
+					if(checkTitle != "" && checkContent != "") {
+						$.post("/StaffingSystem/addCheckInfo!mod", {
+							checkId : check.checkId,
+							checkTitle : checkTitle,
+							checkContent : checkContent
+						}, function(data, textStatus) {
+							if(data.success) {
+								alert("修改成功");
+								location.reload();
+							} else
+								alert(data.reason);
+						}, "json");
+					} else
+						alert("请按要求填写数据");
+				});
+				
+			} else
+				alert(data.reason);
+		}, "json");
+	}
+	
 	</script>
   </body>
 </html>

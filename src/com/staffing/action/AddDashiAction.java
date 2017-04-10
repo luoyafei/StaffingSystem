@@ -14,51 +14,44 @@ import org.springframework.stereotype.Component;
 import com.google.gson.JsonObject;
 import com.opensymphony.xwork2.ActionSupport;
 import com.staffing.bean.Admin;
-import com.staffing.bean.Check;
-import com.staffing.dao.CheckDao;
+import com.staffing.bean.Dashi;
+import com.staffing.dao.DashiDao;
 
 @SuppressWarnings("serial")
-@Component("addCheckInfo")
+@Component("addDashi")
 @Scope("prototype")
-public class AddCheckInfoAction extends ActionSupport {
+public class AddDashiAction extends ActionSupport {
 
-	public String getCheckId() {
-		return checkId;
+	public String getDashiId() {
+		return dashiId;
 	}
-
-	public void setCheckId(String checkId) {
-		this.checkId = checkId;
+	public void setDashiId(String dashiId) {
+		this.dashiId = dashiId;
 	}
-
-	private String checkTitle;
-	private String checkContent;
+	private String dashiTitle;
+	private String dashiContent;
+	private DashiDao dd;
 	
-	private CheckDao cd;
+	public String getDashiTitle() {
+		return dashiTitle;
+	}
+	public void setDashiTitle(String dashiTitle) {
+		this.dashiTitle = dashiTitle;
+	}
+	public String getDashiContent() {
+		return dashiContent;
+	}
+	public void setDashiContent(String dashiContent) {
+		this.dashiContent = dashiContent;
+	}
+	public DashiDao getDd() {
+		return dd;
+	}
+	@Resource(name="dashiDao")
+	public void setDd(DashiDao dd) {
+		this.dd = dd;
+	}
 	
-	public String getCheckTitle() {
-		return checkTitle;
-	}
-
-	public void setCheckTitle(String checkTitle) {
-		this.checkTitle = checkTitle;
-	}
-
-	public String getCheckContent() {
-		return checkContent;
-	}
-
-	public void setCheckContent(String checkContent) {
-		this.checkContent = checkContent;
-	}
-
-	public CheckDao getCd() {
-		return cd;
-	}
-	@Resource(name="checkDao")
-	public void setCd(CheckDao cd) {
-		this.cd = cd;
-	}
-
 	public void add() {
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json; charset=utf-8");
@@ -71,13 +64,12 @@ public class AddCheckInfoAction extends ActionSupport {
 		} catch(IOException e) {}
 		Admin admin = (Admin) ServletActionContext.getRequest().getSession().getAttribute("admin");
 		if(admin != null) {
+			Dashi d = new Dashi();
+			d.setDashiTitle(dashiTitle);
+			d.setDashiContent(dashiContent);
+			d.setDashiDate(new Timestamp(System.currentTimeMillis()));
 			
-			Check c = new Check();
-			c.setCheckTitle(checkTitle);
-			c.setCheckContent(checkContent);
-			c.setCheckDate(new Timestamp(System.currentTimeMillis()));
-			
-			if(cd.saveCheck(c)) {
+			if(dd.saveDashi(d)) {
 				success = true;
 			} else
 				reason = "存入失败";
@@ -93,9 +85,11 @@ public class AddCheckInfoAction extends ActionSupport {
 		out.flush();
 		out.close();	
 	}
+	private String dashiId;
 	
-	private String checkId;
+	
 	public void mod() {
+		
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json; charset=utf-8");
 		PrintWriter out = null;
@@ -106,20 +100,20 @@ public class AddCheckInfoAction extends ActionSupport {
 			out = response.getWriter();
 		} catch(IOException e) {}
 		Admin admin = (Admin) ServletActionContext.getRequest().getSession().getAttribute("admin");
-		Check check = cd.getCheckById(checkId);
+		Dashi d = dd.getDashiById(dashiId);
 		if(admin != null) {
 			
-			if(check != null) {
-				check.setCheckTitle(checkTitle);
-				check.setCheckContent(checkContent);
-				check.setCheckDate(new Timestamp(System.currentTimeMillis()));
+			if(d != null) {
+				d.setDashiTitle(dashiTitle);
+				d.setDashiContent(dashiContent);
+				d.setDashiDate(new Timestamp(System.currentTimeMillis()));
 				
-				if(cd.updateCheck(check)) {
+				if(dd.updateDashi(d)) {
 					success = true;
 				} else
 					reason = "存入失败";
 			} else
-				reason = "无此记录";
+				reason = "无此数据";
 			
 		} else
 			reason = "请先进行登陆";
@@ -131,5 +125,6 @@ public class AddCheckInfoAction extends ActionSupport {
 		
 		out.flush();
 		out.close();	
+		
 	}
 }

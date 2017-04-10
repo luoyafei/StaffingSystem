@@ -27,6 +27,8 @@
     	<action name="addUserInfo" class="addUserInfo" />
     	<!-- 获取所有的用户信息 -->
     	<action name="getUsers" class="getUsers" />
+    	<!-- 人员信息检索 -->
+    	<action name="searchUser" class="searchUser" />
     	<!-- 删除用户 -->
     	<action name="deleteUser" class="deleteUser" />
     	<!-- 增加考勤 -->
@@ -35,6 +37,23 @@
     	<action name="getChecks" class="getChecks" />
     	<!-- 删除考勤信息 -->
     	<action name="deleteCheck" class="deleteCheck" />
-    	
+    	<!-- 增加工资 -->
+    	<action name="addSalary" class="addSalary" />
+    	<!-- 删除工资 -->
+    	<action name="deleteSalary" class="deleteSalary" />
+    	<!-- 获取所有的工资 -->
+    	<action name="getSalarys" class="getSalarys" />
+    	<!-- 增加招聘 -->
+    	<action name="addEmploy" class="addEmploy" />
+    	<!-- 删除招聘 -->
+    	<action name="deleteEmploy" class="deleteEmploy" />
+    	<!-- 获取所有的招聘 -->
+    	<action name="getEmploys" class="getEmploys" />
+    	<!-- 增加事物 -->
+    	<action name="addDashi" class="addDashi" />
+    	<!-- 删除事物 -->
+    	<action name="deleteDashi" class="deleteDashi" />
+    	<!-- 获取所有的事物 -->
+    	<action name="getDashis" class="getDashis" />
     </package>
 </struts>

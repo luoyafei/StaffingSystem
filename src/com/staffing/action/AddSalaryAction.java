@@ -14,49 +14,43 @@ import org.springframework.stereotype.Component;
 import com.google.gson.JsonObject;
 import com.opensymphony.xwork2.ActionSupport;
 import com.staffing.bean.Admin;
-import com.staffing.bean.Check;
-import com.staffing.dao.CheckDao;
+import com.staffing.bean.Salary;
+import com.staffing.dao.SalaryDao;
 
 @SuppressWarnings("serial")
-@Component("addCheckInfo")
+@Component("addSalary")
 @Scope("prototype")
-public class AddCheckInfoAction extends ActionSupport {
+public class AddSalaryAction extends ActionSupport {
 
-	public String getCheckId() {
-		return checkId;
+	public String getSalaryId() {
+		return salaryId;
+	}
+	public void setSalaryId(String salaryId) {
+		this.salaryId = salaryId;
 	}
 
-	public void setCheckId(String checkId) {
-		this.checkId = checkId;
-	}
-
-	private String checkTitle;
-	private String checkContent;
+	private String salaryTitle;
+	private String salaryContent;
+	private SalaryDao sd;
 	
-	private CheckDao cd;
-	
-	public String getCheckTitle() {
-		return checkTitle;
+	public String getSalaryTitle() {
+		return salaryTitle;
 	}
-
-	public void setCheckTitle(String checkTitle) {
-		this.checkTitle = checkTitle;
+	public void setSalaryTitle(String salaryTitle) {
+		this.salaryTitle = salaryTitle;
 	}
-
-	public String getCheckContent() {
-		return checkContent;
+	public String getSalaryContent() {
+		return salaryContent;
 	}
-
-	public void setCheckContent(String checkContent) {
-		this.checkContent = checkContent;
+	public void setSalaryContent(String salaryContent) {
+		this.salaryContent = salaryContent;
 	}
-
-	public CheckDao getCd() {
-		return cd;
+	public SalaryDao getSd() {
+		return sd;
 	}
-	@Resource(name="checkDao")
-	public void setCd(CheckDao cd) {
-		this.cd = cd;
+	@Resource(name="salaryDao")
+	public void setSd(SalaryDao sd) {
+		this.sd = sd;
 	}
 
 	public void add() {
@@ -72,12 +66,12 @@ public class AddCheckInfoAction extends ActionSupport {
 		Admin admin = (Admin) ServletActionContext.getRequest().getSession().getAttribute("admin");
 		if(admin != null) {
 			
-			Check c = new Check();
-			c.setCheckTitle(checkTitle);
-			c.setCheckContent(checkContent);
-			c.setCheckDate(new Timestamp(System.currentTimeMillis()));
+			Salary s = new Salary();
+			s.setSalaryTitle(salaryTitle);
+			s.setSalaryContent(salaryContent);
+			s.setSalaryDate(new Timestamp(System.currentTimeMillis()));
 			
-			if(cd.saveCheck(c)) {
+			if(sd.saveSalary(s)) {
 				success = true;
 			} else
 				reason = "存入失败";
@@ -94,7 +88,7 @@ public class AddCheckInfoAction extends ActionSupport {
 		out.close();	
 	}
 	
-	private String checkId;
+	private String salaryId;
 	public void mod() {
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json; charset=utf-8");
@@ -106,15 +100,15 @@ public class AddCheckInfoAction extends ActionSupport {
 			out = response.getWriter();
 		} catch(IOException e) {}
 		Admin admin = (Admin) ServletActionContext.getRequest().getSession().getAttribute("admin");
-		Check check = cd.getCheckById(checkId);
+		Salary s = sd.getSalaryById(salaryId);
 		if(admin != null) {
 			
-			if(check != null) {
-				check.setCheckTitle(checkTitle);
-				check.setCheckContent(checkContent);
-				check.setCheckDate(new Timestamp(System.currentTimeMillis()));
+			if(s != null) {
+				s.setSalaryTitle(salaryTitle);
+				s.setSalaryContent(salaryContent);
+				s.setSalaryDate(new Timestamp(System.currentTimeMillis()));
 				
-				if(cd.updateCheck(check)) {
+				if(sd.updateSalary(s)) {
 					success = true;
 				} else
 					reason = "存入失败";

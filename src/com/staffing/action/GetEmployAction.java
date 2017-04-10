@@ -14,34 +14,23 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.opensymphony.xwork2.ActionSupport;
-import com.staffing.bean.User;
-import com.staffing.dao.UserDao;
+import com.staffing.bean.Employ;
+import com.staffing.dao.EmployDao;
 
 @SuppressWarnings("serial")
-@Component("getUsers")
+@Component("getEmploys")
 @Scope("prototype")
-public class GetUsersAction extends ActionSupport {
-	
-	public String getUserId() {
-		return userId;
-	}
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+public class GetEmployAction extends ActionSupport {
 
+
+	public String getEmployId() {
+		return employId;
+	}
+	public void setEmployId(String employId) {
+		this.employId = employId;
+	}
 	private String start = null;
 	private String length = null;
-	
-	private String userId;
-	
-	private UserDao ud;
-	public UserDao getUd() {
-		return ud;
-	}
-	@Resource(name="userDao")
-	public void setUd(UserDao ud) {
-		this.ud = ud;
-	}
 	public String getStart() {
 		return start;
 	}
@@ -53,6 +42,14 @@ public class GetUsersAction extends ActionSupport {
 	}
 	public void setLength(String length) {
 		this.length = length;
+	}
+	private EmployDao ed;
+	public EmployDao getEd() {
+		return ed;
+	}
+	@Resource(name="employDao")
+	public void setEd(EmployDao ed) {
+		this.ed = ed;
 	}
 	
 	public void get() {
@@ -68,10 +65,10 @@ public class GetUsersAction extends ActionSupport {
 		} catch(IOException e) {}
 		
 		if(start == null && length == null) {
-			List<User> users = ud.getUsers(-1, -1);
-			if(users != null) {
+			List<Employ> employs = ed.getEmploys(-1, -1);
+			if(employs != null) {
 				success = true;
-				jo.add("users", gson.toJsonTree(users));
+				jo.add("employs", gson.toJsonTree(employs));
 			} else
 				reason = "获取数据为空";
 		} 
@@ -85,7 +82,10 @@ public class GetUsersAction extends ActionSupport {
 		out.close();
 	}
 	
+	private String employId;
+	
 	public void getOne() {
+		
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json; charset=utf-8");
 		PrintWriter out = null;
@@ -96,16 +96,16 @@ public class GetUsersAction extends ActionSupport {
 		try {
 			out = response.getWriter();
 		} catch(IOException e) {}
-
-		if(userId != null) {
-			User user = ud.getUserInId(userId);
-			if(user != null) {
+		
+		if(employId != null) {
+			
+			Employ employ = ed.getEmployById(employId);
+			if(employ != null) {
 				success = true;
-				jo.add("user", gson.toJsonTree(user));
+				jo.add("employ", gson.toJsonTree(employ));
 			} else
 				reason = "获取数据为空";
-		} else
-			reason = "请选择用户";
+		} 
 		
 		jo.addProperty("success", success);
 		jo.addProperty("reason", reason);
@@ -114,5 +114,6 @@ public class GetUsersAction extends ActionSupport {
 		
 		out.flush();
 		out.close();
+		
 	}
 }

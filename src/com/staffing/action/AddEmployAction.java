@@ -14,51 +14,45 @@ import org.springframework.stereotype.Component;
 import com.google.gson.JsonObject;
 import com.opensymphony.xwork2.ActionSupport;
 import com.staffing.bean.Admin;
-import com.staffing.bean.Check;
-import com.staffing.dao.CheckDao;
+import com.staffing.bean.Employ;
+import com.staffing.dao.EmployDao;
 
 @SuppressWarnings("serial")
-@Component("addCheckInfo")
+@Component("addEmploy")
 @Scope("prototype")
-public class AddCheckInfoAction extends ActionSupport {
+public class AddEmployAction extends ActionSupport {
 
-	public String getCheckId() {
-		return checkId;
+	public String getEmployId() {
+		return employId;
+	}
+	public void setEmployId(String employId) {
+		this.employId = employId;
 	}
 
-	public void setCheckId(String checkId) {
-		this.checkId = checkId;
-	}
-
-	private String checkTitle;
-	private String checkContent;
+	private String employTitle;
+	private String employContent;
+	private EmployDao ed;
 	
-	private CheckDao cd;
+	public String getEmployTitle() {
+		return employTitle;
+	}
+	public void setEmployTitle(String employTitle) {
+		this.employTitle = employTitle;
+	}
+	public String getEmployContent() {
+		return employContent;
+	}
+	public void setEmployContent(String employContent) {
+		this.employContent = employContent;
+	}
+	public EmployDao getEd() {
+		return ed;
+	}
+	@Resource(name="employDao")
+	public void setEd(EmployDao ed) {
+		this.ed = ed;
+	}
 	
-	public String getCheckTitle() {
-		return checkTitle;
-	}
-
-	public void setCheckTitle(String checkTitle) {
-		this.checkTitle = checkTitle;
-	}
-
-	public String getCheckContent() {
-		return checkContent;
-	}
-
-	public void setCheckContent(String checkContent) {
-		this.checkContent = checkContent;
-	}
-
-	public CheckDao getCd() {
-		return cd;
-	}
-	@Resource(name="checkDao")
-	public void setCd(CheckDao cd) {
-		this.cd = cd;
-	}
-
 	public void add() {
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json; charset=utf-8");
@@ -72,12 +66,12 @@ public class AddCheckInfoAction extends ActionSupport {
 		Admin admin = (Admin) ServletActionContext.getRequest().getSession().getAttribute("admin");
 		if(admin != null) {
 			
-			Check c = new Check();
-			c.setCheckTitle(checkTitle);
-			c.setCheckContent(checkContent);
-			c.setCheckDate(new Timestamp(System.currentTimeMillis()));
+			Employ e = new Employ();
+			e.setEmployTitle(employTitle);
+			e.setEmployContent(employContent);
+			e.setEmployDate(new Timestamp(System.currentTimeMillis()));
 			
-			if(cd.saveCheck(c)) {
+			if(ed.saveEmploy(e)) {
 				success = true;
 			} else
 				reason = "存入失败";
@@ -94,7 +88,8 @@ public class AddCheckInfoAction extends ActionSupport {
 		out.close();	
 	}
 	
-	private String checkId;
+	private String employId;
+	
 	public void mod() {
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json; charset=utf-8");
@@ -106,15 +101,14 @@ public class AddCheckInfoAction extends ActionSupport {
 			out = response.getWriter();
 		} catch(IOException e) {}
 		Admin admin = (Admin) ServletActionContext.getRequest().getSession().getAttribute("admin");
-		Check check = cd.getCheckById(checkId);
+		Employ e = ed.getEmployById(employId);
 		if(admin != null) {
-			
-			if(check != null) {
-				check.setCheckTitle(checkTitle);
-				check.setCheckContent(checkContent);
-				check.setCheckDate(new Timestamp(System.currentTimeMillis()));
+			if(e != null) {
+				e.setEmployTitle(employTitle);
+				e.setEmployContent(employContent);
+				e.setEmployDate(new Timestamp(System.currentTimeMillis()));
 				
-				if(cd.updateCheck(check)) {
+				if(ed.updateEmploy(e)) {
 					success = true;
 				} else
 					reason = "存入失败";

@@ -24,6 +24,14 @@ import com.staffing.tools.UploadFileUtil;
 @Scope("prototype")
 public class AddUserInfoAction extends ActionSupport {
 
+	public String getUserId() {
+		return userId;
+	}
+
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
+
 	/**
 	 * 图片存入数据库的地址s
 	 */
@@ -201,7 +209,8 @@ public class AddUserInfoAction extends ActionSupport {
 						reason = "用户信息写入失败";
 				} else
 					reason = "图片存入失败";
-			}
+			} else
+				reason = "图片格式错误";
 		} else
 			reason = "请先进行登陆";
 		
@@ -214,4 +223,95 @@ public class AddUserInfoAction extends ActionSupport {
 		out.close();	
 	}
 
+	private String userId;
+	
+	public void modUserInfo() {
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json; charset=utf-8");
+		PrintWriter out = null;
+		JsonObject jo = new JsonObject();
+		boolean success = false;
+		String reason = "";
+		try {
+			out = response.getWriter();
+		} catch(IOException e) {}
+		Admin admin = (Admin) ServletActionContext.getRequest().getSession().getAttribute("admin");
+		User user = ud.getUserInId(userId);
+
+		if(admin != null) {
+			if(user != null) {
+				if(picture != null) {
+					/**
+					 * 保证传输过来的是图片
+					 */
+					if(pictureContentType.split("/")[0].equals("image")) {
+						/**
+						 * 自定义上传的图像名
+						 */
+						pictureFileName = UUID.randomUUID().toString().replace("-", "") + ".jpg";
+						
+						/**
+						 * 获取存入硬盘的具体地址
+						 */
+						String url = PICTURE_DISK + pictureFileName;
+						/**
+						 * 根据全路径，将文件创建出来。
+						 */
+						File file = new File(url);
+						
+						/**
+						 * 标识，创建文件是否成功
+						 * 使用上传文件工具类
+						 */
+						boolean create = UploadFileUtil.justDoIt(picture, file);
+
+						/**
+						 * 如果创建成功，则进行往数据库用户表中更新
+						 */
+						if(create) {
+							user.setAge(age);
+							user.setDepartment(department);
+							user.setPost(post);
+							user.setUserAddress(userAddress);
+							user.setUserEmail(userEmail);
+							user.setUserIdcard(userIdcard);
+							user.setUserName(userName);
+							user.setUserTel(userTel);
+							user.setUserPhoto(PICTURE_DB + pictureFileName);
+							if(ud.updateUser(user)) {
+								success = true;
+							} else
+								reason = "用户信息更新失败";
+						} else
+							reason = "图片存入失败";
+					} else
+						reason = "图片格式错误";
+				} else {
+					user.setAge(age);
+					user.setDepartment(department);
+					user.setPost(post);
+					user.setUserAddress(userAddress);
+					user.setUserEmail(userEmail);
+					user.setUserIdcard(userIdcard);
+					user.setUserName(userName);
+					user.setUserTel(userTel);
+					if(ud.updateUser(user)) {
+						success = true;
+					} else
+						reason = "用户信息更新失败";
+				}
+			} else
+				reason = "该用户不存在";
+		} else
+			reason = "请先进行登陆";
+		
+		jo.addProperty("success", success);
+		jo.addProperty("reason", reason);
+		
+		out.print(jo.toString());
+		
+		out.flush();
+		out.close();	
+	}
+	
 }

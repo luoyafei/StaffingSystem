@@ -22,6 +22,13 @@ import com.staffing.dao.CheckDao;
 @Scope("prototype")
 public class GetChecksAction extends ActionSupport {
 
+	public String getCheckId() {
+		return checkId;
+	}
+	public void setCheckId(String checkId) {
+		this.checkId = checkId;
+	}
+
 	private String start = null;
 	private String length = null;
 	private CheckDao cd;
@@ -66,6 +73,38 @@ public class GetChecksAction extends ActionSupport {
 			} else
 				reason = "获取数据为空";
 		} 
+		
+		jo.addProperty("success", success);
+		jo.addProperty("reason", reason);
+		
+		out.print(jo.toString());
+		
+		out.flush();
+		out.close();
+	}
+	
+	private String checkId;
+	public void getOne() {
+		HttpServletResponse response = ServletActionContext.getResponse();
+		response.setContentType("application/json; charset=utf-8");
+		PrintWriter out = null;
+		Gson gson = new Gson();
+		JsonObject jo = new JsonObject();
+		boolean success = false;
+		String reason = "";
+		try {
+			out = response.getWriter();
+		} catch(IOException e) {}
+		
+		if(checkId != null) {
+			Check check = cd.getCheckById(checkId);
+			if(check != null) {
+				success = true;
+				jo.add("check", gson.toJsonTree(check));
+			} else
+				reason = "获取数据为空";
+		} else
+			reason = "无此记录";
 		
 		jo.addProperty("success", success);
 		jo.addProperty("reason", reason);

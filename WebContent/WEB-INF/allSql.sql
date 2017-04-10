@@ -11,7 +11,7 @@ create table t_admin (
 
 create table t_user (
 	userId varchar(32) primary key,
-	usersName varchar(11),
+	userName varchar(11),
 	userPhoto varchar(255),
 	userIdcard varchar(32),
 	userAddress varchar(255),

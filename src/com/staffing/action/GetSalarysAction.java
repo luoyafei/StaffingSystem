@@ -14,34 +14,25 @@ import org.springframework.stereotype.Component;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.opensymphony.xwork2.ActionSupport;
-import com.staffing.bean.User;
-import com.staffing.dao.UserDao;
+import com.staffing.bean.Salary;
+import com.staffing.dao.SalaryDao;
 
 @SuppressWarnings("serial")
-@Component("getUsers")
+@Component("getSalarys")
 @Scope("prototype")
-public class GetUsersAction extends ActionSupport {
-	
-	public String getUserId() {
-		return userId;
+public class GetSalarysAction extends ActionSupport {
+
+	public String getSalaryId() {
+		return salaryId;
 	}
-	public void setUserId(String userId) {
-		this.userId = userId;
+	public void setSalaryId(String salaryId) {
+		this.salaryId = salaryId;
 	}
 
 	private String start = null;
 	private String length = null;
+	private SalaryDao sd;
 	
-	private String userId;
-	
-	private UserDao ud;
-	public UserDao getUd() {
-		return ud;
-	}
-	@Resource(name="userDao")
-	public void setUd(UserDao ud) {
-		this.ud = ud;
-	}
 	public String getStart() {
 		return start;
 	}
@@ -53,6 +44,13 @@ public class GetUsersAction extends ActionSupport {
 	}
 	public void setLength(String length) {
 		this.length = length;
+	}
+	public SalaryDao getSd() {
+		return sd;
+	}
+	@Resource(name="salaryDao")
+	public void setSd(SalaryDao sd) {
+		this.sd = sd;
 	}
 	
 	public void get() {
@@ -68,10 +66,10 @@ public class GetUsersAction extends ActionSupport {
 		} catch(IOException e) {}
 		
 		if(start == null && length == null) {
-			List<User> users = ud.getUsers(-1, -1);
-			if(users != null) {
+			List<Salary> salarys = sd.getSalarys(-1, -1);
+			if(salarys != null) {
 				success = true;
-				jo.add("users", gson.toJsonTree(users));
+				jo.add("salarys", gson.toJsonTree(salarys));
 			} else
 				reason = "获取数据为空";
 		} 
@@ -85,6 +83,7 @@ public class GetUsersAction extends ActionSupport {
 		out.close();
 	}
 	
+	private String salaryId;
 	public void getOne() {
 		HttpServletResponse response = ServletActionContext.getResponse();
 		response.setContentType("application/json; charset=utf-8");
@@ -96,16 +95,16 @@ public class GetUsersAction extends ActionSupport {
 		try {
 			out = response.getWriter();
 		} catch(IOException e) {}
-
-		if(userId != null) {
-			User user = ud.getUserInId(userId);
-			if(user != null) {
+		
+		if(salaryId != null) {
+			Salary salary = sd.getSalaryById(salaryId);
+			if(salary != null) {
 				success = true;
-				jo.add("user", gson.toJsonTree(user));
+				jo.add("salary", gson.toJsonTree(salary));
 			} else
 				reason = "获取数据为空";
 		} else
-			reason = "请选择用户";
+			reason = "无此记录";
 		
 		jo.addProperty("success", success);
 		jo.addProperty("reason", reason);
